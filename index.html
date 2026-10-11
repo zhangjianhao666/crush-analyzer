@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta name="description" content="一款趣味性Web工具，用户上传暗恋对象头像并选择性别，通过玄学分析生成命宫标签、性格解析和追求建议。采用星空主题和丰富动画效果营造神秘氛围。" />
+    <meta name="keywords" content="" />
+    <meta itemprop="image" content="https://job-manager-artifacts-online.cdn.bcebos.com/prod/artifacts/8c399b00-54cd-469b-b261-50bb7d708b6d/app-d6o22l5w3hmp_web_1784702453386.png" />
+    <meta property="og:title" content="头像玄学Crush分析器网页" />
+    <meta property="og:description" content="一款趣味性Web工具，用户上传暗恋对象头像并选择性别，通过玄学分析生成命宫标签、性格解析和追求建议。采用星空主题和丰富动画效果营造神秘氛围。" />
+    <meta property="og:image" content="https://job-manager-artifacts-online.cdn.bcebos.com/prod/artifacts/8c399b00-54cd-469b-b261-50bb7d708b6d/app-d6o22l5w3hmp_web_1784702453386.png" />
+    <meta property="og:url" content="https://app-d6o22l5w3hmp.appmiaoda.com" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="头像玄学Crush分析器网页" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="头像玄学Crush分析器网页" />
+    <meta name="twitter:description" content="一款趣味性Web工具，用户上传暗恋对象头像并选择性别，通过玄学分析生成命宫标签、性格解析和追求建议。采用星空主题和丰富动画效果营造神秘氛围。" />
+    <meta name="twitter:image" content="https://job-manager-artifacts-online.cdn.bcebos.com/prod/artifacts/8c399b00-54cd-469b-b261-50bb7d708b6d/app-d6o22l5w3hmp_web_1784702453386.png" />
+    <meta name="twitter:url" content="https://app-d6o22l5w3hmp.appmiaoda.com" />
+    <link rel="icon" href="assets/favicon.png" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>头像玄学Crush分析器网页</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #0b0719;
+            --bg-mid: #1a103d;
+            --gold: #d4af37;
+            --gold-light: #e8c95b;
+            --star-white: #e8e0f0;
+            --neon-purple: #9b59b6;
+            --neon-purple-light: #b97fd4;
+            --card-bg: rgba(18, 10, 38, 0.55);
+            --glow-color: rgba(212, 175, 55, 0.4);
+            --glow-color-2: rgba(155, 89, 182, 0.35);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-deep);
+            background-image:
+                radial-gradient(ellipse at 30% 15%, rgba(155, 89, 182, 0.12) 0%, transparent 55%),
+                radial-gradient(ellipse at 70% 60%, rgba(212, 175, 55, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 85%, rgba(100, 140, 220, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 15% 75%, rgba(180, 120, 200, 0.07) 0%, transparent 45%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, 'Times New Roman', 'Noto Serif SC', serif;
+            color: var(--star-white);
+            overflow-x: hidden;
+            position: relative;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* 星空Canvas */
+        #starCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* 流星 */
+        .shooting-star {
+            position: fixed;
+            width: 2px;
+            height: 80px;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0));
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+            animation: shootStar var(--duration) linear forwards;
+            opacity: 0;
+        }
+        @keyframes shootStar {
+            0% {
+                opacity: 0;
+                transform: translate(0, 0) rotate(-25deg) scale(0.3);
+            }
+            8% {
+                opacity: 1;
+            }
+            40% {
+                opacity: 0.5;
+                transform: translate(-400px, 300px) rotate(-25deg) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-700px, 520px) rotate(-25deg) scale(0.1);
+            }
+        }
+
+        /* 主容器 */
+        .main-container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 560px;
+            padding: 24px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 28px;
+        }
+
+        /* 标题区 */
+        .header {
+            text-align: center;
+            position: relative;
+        }
+        .header .title-icon {
+            display: inline-block;
+            width: 52px;
+            height: 52px;
+            margin-bottom: 8px;
+            position: relative;
+        }
+        .header .title-icon svg {
+            width: 100%;
+            height: 100%;
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+        @keyframes iconFloat {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+        .header h1 {
+            font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+            font-size: 2.2rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            background: linear-gradient(180deg, #f0e6c8 0%, #d4af37 40%, #b8922e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+            margin: 0;
+            line-height: 1.3;
+            text-shadow: none;
+        }
+        .header .subtitle {
+            font-size: 0.95rem;
+            color: rgba(232, 224, 240, 0.65);
+            letter-spacing: 0.12em;
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        /* 装饰分隔线 */
+        .divider-ornament {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            max-width: 300px;
+            opacity: 0.5;
+        }
+        .divider-ornament .line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+        .divider-ornament .diamond {
+            width: 8px;
+            height: 8px;
+            background: var(--gold);
+            transform: rotate(45deg);
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.7);
+            animation: diamondPulse 2s ease-in-out infinite;
+        }
+        @keyframes diamondPulse {
+            0%,
+            100% {
+                box-shadow: 0 0 8px rgba(212, 175, 55, 0.7);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(212, 175, 55, 1), 0 0 35px rgba(212, 175, 55, 0.5);
+            }
+        }
+
+        /* 上传卡片 */
+        .upload-card {
+            width: 100%;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 20px;
+            position: relative;
+            box-shadow:
+                0 8px 40px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.03),
+                0 0 60px var(--glow-color);
+            transition: all 0.5s ease;
+            overflow: hidden;
+        }
+        .upload-card::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 20px;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.5), transparent 40%, transparent 60%, rgba(155, 89, 182, 0.4));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .upload-card.has-image::before {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.7), transparent 35%, transparent 65%, rgba(155, 89, 182, 0.6));
+        }
+
+        /* 上传区域 */
+        .upload-zone {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            min-height: 200px;
+            border: 2px dashed rgba(212, 175, 55, 0.45);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            padding: 30px 20px;
+            animation: uploadBreath 3s ease-in-out infinite;
+            background: rgba(10, 6, 28, 0.35);
+            overflow: hidden;
+        }
+        @keyframes uploadBreath {
+            0%,
+            100% {
+                border-color: rgba(212, 175, 55, 0.4);
+                box-shadow: 0 0 20px rgba(212, 175, 55, 0.12), 0 0 40px rgba(155, 89, 182, 0.08);
+            }
+            50% {
+                border-color: rgba(212, 175, 55, 0.75);
+                box-shadow: 0 0 35px rgba(212, 175, 55, 0.28), 0 0 65px rgba(155, 89, 182, 0.18), 0 0 90px rgba(212, 175, 55, 0.08);
+            }
+        }
+        .upload-zone:hover {
+            border-color: rgba(212, 175, 55, 0.8);
+            background: rgba(15, 9, 36, 0.5);
+            box-shadow: 0 0 45px rgba(212, 175, 55, 0.25), 0 0 70px rgba(155, 89, 182, 0.2);
+            transform: translateY(-2px);
+        }
+        .upload-zone.drag-over {
+            border-color: var(--gold-light) !important;
+            background: rgba(25, 14, 50, 0.6) !important;
+            box-shadow: 0 0 60px rgba(212, 175, 55, 0.45), 0 0 100px rgba(155, 89, 182, 0.35) !important;
+            transform: scale(1.02);
+            animation: none !important;
+        }
+        .upload-zone .upload-icon-svg {
+            width: 56px;
+            height: 56px;
+            margin-bottom: 12px;
+            opacity: 0.7;
+            transition: all 0.4s ease;
+        }
+        .upload-zone:hover .upload-icon-svg {
+            opacity: 1;
+            transform: scale(1.08);
+        }
+        .upload-zone .upload-text {
+            font-size: 1rem;
+            color: rgba(232, 224, 240, 0.7);
+            letter-spacing: 0.05em;
+            text-align: center;
+            transition: color 0.3s;
+        }
+        .upload-zone .upload-hint {
+            font-size: 0.8rem;
+            color: rgba(232, 224, 240, 0.4);
+            margin-top: 6px;
+            letter-spacing: 0.04em;
+        }
+
+        /* 图片预览层 */
+        .preview-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 3;
+            border-radius: 16px;
+            display: none;
+            overflow: hidden;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: rgba(10, 6, 28, 0.8);
+        }
+        .preview-overlay.active {
+            display: block;
+        }
+        .preview-overlay .preview-change-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            cursor: pointer;
+            letter-spacing: 0.04em;
+            transition: all 0.3s;
+            font-family: inherit;
+            z-index: 5;
+        }
+        .preview-overlay .preview-change-btn:hover {
+            background: rgba(0, 0, 0, 0.85);
+            border-color: var(--gold);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
+        .preview-overlay .preview-glow-ring {
+            position: absolute;
+            inset: 8px;
+            border-radius: 12px;
+            border: 1px solid rgba(212, 175, 55, 0.35);
+            pointer-events: none;
+            box-shadow: inset 0 0 30px rgba(212, 175, 55, 0.1);
+        }
+
+        /* 隐藏的file input */
+        #fileInput {
+            display: none;
+        }
+
+        /* 分析按钮 */
+        .analyze-btn {
+            z-index: 2;
+            width: 100%;
+            max-width: 340px;
+            padding: 16px 32px;
+            font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            color: #0b0719;
+            background: linear-gradient(135deg, #d4af37 0%, #e8c95b 30%, #c9a030 70%, #b8922e 100%);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 6px 30px rgba(212, 175, 55, 0.35), 0 0 0 rgba(212, 175, 55, 0);
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+        }
+        .analyze-btn::after {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            border-radius: 48px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.25) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .analyze-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(212, 175, 55, 0.5), 0 0 80px rgba(212, 175, 55, 0.2);
+            letter-spacing: 0.13em;
+        }
+        .analyze-btn:active:not(:disabled) {
+            transform: translateY(-1px) scale(0.98);
+            transition: all 0.1s ease;
+        }
+        .analyze-btn:disabled {
+            background: linear-gradient(135deg, #5a5070 0%, #6e637f 100%);
+            color: rgba(232, 224, 240, 0.45);
+            cursor: not-allowed;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            letter-spacing: 0.08em;
+        }
+        .analyze-btn:disabled::after {
+            background: none;
+        }
+        .analyze-btn.pulse-ready {
+            animation: btnGlow 2s ease-in-out infinite;
+        }
+        @keyframes btnGlow {
+            0%,
+            100% {
+                box-shadow: 0 6px 30px rgba(212, 175, 55, 0.35), 0 0 0 rgba(212, 175, 55, 0);
+            }
+            50% {
+                box-shadow: 0 8px 45px rgba(212, 175, 55, 0.6), 0 0 70px rgba(212, 175, 55, 0.3);
+            }
+        }
+
+        /* 结果卡片 */
+        .result-card {
+            width: 100%;
+            background: var(--card-bg);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            border-radius: 20px;
+            border: 1px solid rgba(212, 175, 55, 0.35);
+            padding: 28px 24px;
+            position: relative;
+            box-shadow:
+                0 12px 50px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.04),
+                0 0 80px var(--glow-color),
+                0 0 30px var(--glow-color-2);
+            display: none;
+            overflow: visible;
+            transition: box-shadow 0.8s ease;
+        }
+        .result-card.visible {
+            display: block;
+            animation: resultFadeInUp 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+        }
+        @keyframes resultFadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(40px);
+                filter: blur(8px);
+            }
+            60% {
+                opacity: 0.9;
+                transform: translateY(-4px);
+                filter: blur(1px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+                filter: blur(0);
+            }
+        }
+        .result-card .card-glow-orb {
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: var(--glow-color);
+            filter: blur(70px);
+            pointer-events: none;
+            z-index: -1;
+            top: -40px;
+            right: -40px;
+            opacity: 0.7;
+            transition: background 0.8s ease;
+        }
+        .result-card .card-glow-orb.second {
+            width: 140px;
+            height: 140px;
+            top: auto;
+            bottom: -30px;
+            left: -30px;
+            right: auto;
+            background: var(--glow-color-2);
+            filter: blur(55px);
+            opacity: 0.6;
+        }
+        .result-card .card-inner-border {
+            position: absolute;
+            inset: 6px;
+            border-radius: 16px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .result-card .corner-ornament {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.5;
+        }
+        .result-card .corner-ornament.top-left {
+            top: 14px;
+            left: 14px;
+            border-top: 2px solid rgba(212, 175, 55, 0.6);
+            border-left: 2px solid rgba(212, 175, 55, 0.6);
+            border-top-left-radius: 4px;
+        }
+        .result-card .corner-ornament.top-right {
+            top: 14px;
+            right: 14px;
+            border-top: 2px solid rgba(212, 175, 55, 0.6);
+            border-right: 2px solid rgba(212, 175, 55, 0.6);
+            border-top-right-radius: 4px;
+        }
+        .result-card .corner-ornament.bottom-left {
+            bottom: 14px;
+            left: 14px;
+            border-bottom: 2px solid rgba(212, 175, 55, 0.6);
+            border-left: 2px solid rgba(212, 175, 55, 0.6);
+            border-bottom-left-radius: 4px;
+        }
+        .result-card .corner-ornament.bottom-right {
+            bottom: 14px;
+            right: 14px;
+            border-bottom: 2px solid rgba(212, 175, 55, 0.6);
+            border-right: 2px solid rgba(212, 175, 55, 0.6);
+            border-bottom-right-radius: 4px;
+        }
+
+        /* 结果内容 */
+        .result-section {
+            position: relative;
+            z-index: 2;
+            margin-bottom: 20px;
+        }
+        .result-section:last-child {
+            margin-bottom: 0;
+        }
+        .result-section .section-label {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: var(--gold);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .result-section .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(212, 175, 55, 0.5), transparent);
+            min-width: 30px;
+        }
+        .result-section .section-icon {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+        }
+
+        /* 标签 */
+        .tags-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .tag-item {
+            display: inline-block;
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+            background: rgba(155, 89, 182, 0.2);
+            border: 1px solid rgba(155, 89, 182, 0.5);
+            color: #d4b8e8;
+            transition: all 0.4s ease;
+            animation: tagPop 0.5s ease-out forwards;
+            opacity: 0;
+        }
+        .tag-item:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+        .tag-item:nth-child(2) {
+            animation-delay: 0.35s;
+        }
+        .tag-item:nth-child(3) {
+            animation-delay: 0.5s;
+        }
+        @keyframes tagPop {
+            0% {
+                opacity: 0;
+                transform: scale(0.7);
+            }
+            70% {
+                transform: scale(1.08);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* 性格解析 */
+        .analysis-text {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: rgba(232, 224, 240, 0.9);
+            letter-spacing: 0.03em;
+            font-style: italic;
+            padding: 14px 18px;
+            background: rgba(10, 5, 28, 0.4);
+            border-radius: 12px;
+            border-left: 3px solid rgba(212, 175, 55, 0.5);
+            position: relative;
+        }
+        .analysis-text::before {
+            content: '"';
+            position: absolute;
+            top: -10px;
+            left: 8px;
+            font-size: 3rem;
+            color: rgba(212, 175, 55, 0.3);
+            font-family: 'Playfair Display', Georgia, serif;
+            line-height: 1;
+        }
+
+        /* 攻心策略 */
+        .strategy-text {
+            font-size: 1rem;
+            line-height: 1.75;
+            color: rgba(232, 224, 240, 0.85);
+            letter-spacing: 0.03em;
+            padding: 14px 18px;
+            background: rgba(20, 12, 40, 0.35);
+            border-radius: 12px;
+            border-right: 3px solid rgba(155, 89, 182, 0.5);
+            position: relative;
+        }
+        .strategy-text .highlight {
+            color: var(--gold-light);
+            font-weight: 500;
+        }
+
+        /* 加载覆盖层 */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: rgba(8, 4, 20, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        .loading-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* 星盘加载动画 */
+        .astrolabe-container {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            margin-bottom: 28px;
+        }
+        .astrolabe-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 1.5px solid rgba(212, 175, 55, 0.5);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .astrolabe-ring.ring-1 {
+            width: 170px;
+            height: 170px;
+            border-style: dashed;
+            border-color: rgba(212, 175, 55, 0.55);
+            animation: spinClockwise 4s linear infinite;
+        }
+        .astrolabe-ring.ring-2 {
+            width: 130px;
+            height: 130px;
+            border-style: solid;
+            border-color: rgba(155, 89, 182, 0.5);
+            animation: spinCounterClockwise 3.2s linear infinite;
+        }
+        .astrolabe-ring.ring-3 {
+            width: 90px;
+            height: 90px;
+            border-style: dotted;
+            border-width: 2px;
+            border-color: rgba(212, 175, 55, 0.7);
+            animation: spinClockwise 2.6s linear infinite;
+        }
+        .astrolabe-cross {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 160px;
+            height: 160px;
+            animation: spinSlow 8s linear infinite;
+        }
+        .astrolabe-cross::before,
+        .astrolabe-cross::after {
+            content: '';
+            position: absolute;
+            background: rgba(212, 175, 55, 0.3);
+        }
+        .astrolabe-cross::before {
+            width: 100%;
+            height: 1px;
+            top: 50%;
+            left: 0;
+        }
+        .astrolabe-cross::after {
+            width: 1px;
+            height: 100%;
+            left: 50%;
+            top: 0;
+        }
+        .astrolabe-core {
+            position: absolute;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #f0e6c8 0%, #d4af37 40%, #8b6914 100%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.8), 0 0 80px rgba(212, 175, 55, 0.4), 0 0 120px rgba(212, 175, 55, 0.2);
+            animation: coreGlow 1.5s ease-in-out infinite;
+            z-index: 2;
+        }
+        @keyframes spinClockwise {
+            from {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+        @keyframes spinCounterClockwise {
+            from {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            to {
+                transform: translate(-50%, -50%) rotate(-360deg);
+            }
+        }
+        @keyframes spinSlow {
+            from {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+        @keyframes coreGlow {
+            0%,
+            100% {
+                box-shadow: 0 0 40px rgba(212, 175, 55, 0.7), 0 0 80px rgba(212, 175, 55, 0.35);
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                box-shadow: 0 0 70px rgba(212, 175, 55, 1), 0 0 140px rgba(212, 175, 55, 0.6), 0 0 200px rgba(255, 220, 150, 0.3);
+                transform: translate(-50%, -50%) scale(1.25);
+            }
+        }
+
+        /* 环绕粒子 */
+        .orbit-particle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #f0e6c8;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.9);
+            animation: orbitFloat var(--orbit-duration) ease-in-out infinite;
+            animation-delay: var(--orbit-delay);
+            top: 50%;
+            left: 50%;
+            --orbit-radius: 95px;
+            --orbit-angle: 0deg;
+        }
+        @keyframes orbitFloat {
+            0% {
+                transform: translate(-50%, -50%) rotate(var(--orbit-angle)) translateX(var(--orbit-radius)) rotate(calc(-1 * var(--orbit-angle)));
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(calc(var(--orbit-angle) + 360deg)) translateX(var(--orbit-radius)) rotate(calc(-1 * var(--orbit-angle) - 360deg));
+                opacity: 0.3;
+            }
+        }
+
+        .loading-text {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1rem;
+            letter-spacing: 0.1em;
+            color: rgba(232, 224, 240, 0.8);
+            animation: loadingTextPulse 2s ease-in-out infinite;
+        }
+        @keyframes loadingTextPulse {
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+        .loading-dots {
+            display: inline-block;
+            animation: dotsBounce 1.4s ease-in-out infinite;
+        }
+        @keyframes dotsBounce {
+            0%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* 性别选择器 */
+        .gender-selector {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            z-index: 2;
+        }
+        .gender-selector .gender-label {
+            font-size: 0.9rem;
+            color: rgba(232, 224, 240, 0.65);
+            letter-spacing: 0.06em;
+            font-style: italic;
+            white-space: nowrap;
+        }
+        .gender-toggle {
+            display: flex;
+            background: rgba(18, 10, 38, 0.55);
+            border-radius: 30px;
+            border: 1px solid rgba(212, 175, 55, 0.35);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
+        }
+        .gender-option {
+            padding: 10px 24px;
+            font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+            font-size: 0.95rem;
+            letter-spacing: 0.06em;
+            color: rgba(232, 224, 240, 0.5);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            white-space: nowrap;
+        }
+        .gender-option.active {
+            color: #0b0719;
+            background: linear-gradient(135deg, #d4af37 0%, #e8c95b 50%, #c9a030 100%);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+        .gender-option:hover:not(.active) {
+            color: rgba(232, 224, 240, 0.85);
+            background: rgba(155, 89, 182, 0.15);
+        }
+
+        /* 响应式 */
+        @media (max-width: 600px) {
+            .main-container {
+                padding: 16px 12px;
+                gap: 20px;
+            }
+            .header h1 {
+                font-size: 1.6rem;
+            }
+            .upload-zone {
+                min-height: 150px;
+                padding: 20px 14px;
+            }
+            .result-card {
+                padding: 20px 16px;
+            }
+            .analysis-text,
+            .strategy-text {
+                font-size: 0.9rem;
+                padding: 10px 14px;
+            }
+            .gender-option {
+                padding: 8px 18px;
+                font-size: 0.85rem;
+            }
+            .analyze-btn {
+                font-size: 1rem;
+                padding: 14px 24px;
+            }
+            .astrolabe-container {
+                width: 140px;
+                height: 140px;
+            }
+            .astrolabe-ring.ring-1 {
+                width: 130px;
+                height: 130px;
+            }
+            .astrolabe-ring.ring-2 {
+                width: 100px;
+                height: 100px;
+            }
+            .astrolabe-ring.ring-3 {
+                width: 68px;
+                height: 68px;
+            }
+            .astrolabe-cross {
+                width: 120px;
+                height: 120px;
+            }
+            .astrolabe-core {
+                width: 22px;
+                height: 22px;
+            }
+            .orbit-particle {
+                --orbit-radius: 72px;
+            }
+        }
+        @media (max-width: 380px) {
+            .header h1 {
+                font-size: 1.35rem;
+            }
+            .upload-zone {
+                min-height: 130px;
+                padding: 16px 10px;
+            }
+            .tags-row {
+                gap: 6px;
+            }
+            .tag-item {
+                padding: 6px 12px;
+                font-size: 0.78rem;
+            }
+            .gender-selector {
+                gap: 10px;
+            }
+            .gender-selector .gender-label {
+                font-size: 0.78rem;
+            }
+            .gender-option {
+                padding: 7px 14px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+  <script>
+              (function () {
+                const redirect = new URLSearchParams(location.search).get('redirect');
+                if (redirect && redirect !== location.pathname) {
+                  history.replaceState(null, '', redirect);
+                }
+              })();
+            </script>
+  <link rel="stylesheet" id="fonts-code" href="https://miaoda-font.cdn.bcebos.com/static/font_v1/fonts-code.css">
+</head>
+<body>
+
+    <!-- 星空背景Canvas -->
+    <canvas id="starCanvas"></canvas>
+
+    <!-- 加载覆盖层 -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="astrolabe-container">
+            <div class="astrolabe-ring ring-1"></div>
+            <div class="astrolabe-ring ring-2"></div>
+            <div class="astrolabe-ring ring-3"></div>
+            <div class="astrolabe-cross"></div>
+            <div class="astrolabe-core"></div>
+            <!-- 环绕粒子 -->
+            <div class="orbit-particle" style="--orbit-angle: 0deg; --orbit-duration: 3.5s; --orbit-delay: 0s;"></div>
+            <div class="orbit-particle" style="--orbit-angle: 45deg; --orbit-duration: 4s; --orbit-delay: 0.4s;"></div>
+            <div class="orbit-particle" style="--orbit-angle: 90deg; --orbit-duration: 3.2s; --orbit-delay: 0.8s;"></div>
+            <div class="orbit-particle" style="--orbit-angle: 135deg; --orbit-duration: 3.8s; --orbit-delay: 1.2s;"></div>
+            <div class="orbit-particle" style="--orbit-angle: 180deg; --orbit-duration: 3.6s; --orbit-delay: 0.2s;"></div>
+            <div class="orbit-particle" style="--orbit-angle: 225deg; --orbit-duration: 4.2s; --orbit-delay: 0.6s;"></div>
+            <div class="orbit-particle" style="--orbit-angle: 270deg; --orbit-duration: 3.3s; --orbit-delay: 1s;"></div>
+            <div class="orbit-particle" style="--orbit-angle: 315deg; --orbit-duration: 3.9s; --orbit-delay: 1.4s;"></div>
+        </div>
+        <p class="loading-text" id="loadingText">正在感知能量场<span class="loading-dots">...</span></p>
+    </div>
+
+    <!-- 主容器 -->
+    <div class="main-container" id="mainContainer">
+        <!-- 标题 -->
+        <div class="header">
+            <div class="title-icon">
+                <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="26" cy="26" r="24" stroke="rgba(212,175,55,0.5)" stroke-width="1.2" fill="none"/>
+                    <circle cx="26" cy="26" r="14" stroke="rgba(155,89,182,0.5)" stroke-width="0.8" fill="none" stroke-dasharray="4 3"/>
+                    <polygon points="26,4 30,20 46,22 32,32 36,48 26,38 16,48 20,32 6,22 22,20" fill="rgba(212,175,55,0.7)" stroke="rgba(212,175,55,0.9)" stroke-width="0.5"/>
+                    <circle cx="26" cy="26" r="3.5" fill="#e8e0f0" opacity="0.8"/>
+                </svg>
+            </div>
+            <h1>Crush头像星辰能量分析</h1>
+            <p class="subtitle">— 以星辰之力，解读TA的灵魂印记 —</p>
+        </div>
+
+        <!-- 装饰分隔线 -->
+        <div class="divider-ornament">
+            <span class="line"></span>
+            <span class="diamond"></span>
+            <span class="line"></span>
+        </div>
+
+        <!-- 上传卡片 -->
+        <div class="upload-card" id="uploadCard">
+            <div class="upload-zone" id="uploadZone">
+                <div class="preview-overlay" id="previewOverlay">
+                    <button class="preview-change-btn" id="previewChangeBtn" type="button">✧ 更换</button>
+                    <div class="preview-glow-ring"></div>
+                </div>
+                <svg class="upload-icon-svg" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="6" y="10" width="44" height="36" rx="6" stroke="rgba(212,175,55,0.6)" stroke-width="1.5" fill="none"/>
+                    <circle cx="20" cy="24" r="5" stroke="rgba(212,175,55,0.55)" stroke-width="1.2" fill="none"/>
+                    <path d="M6 38 L18 28 L26 34 L36 22 L50 32" stroke="rgba(212,175,55,0.5)" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="38" cy="16" r="2.5" fill="rgba(155,89,182,0.6)"/>
+                </svg>
+                <p class="upload-text">点击或拖拽上传TA的头像</p>
+                <p class="upload-hint">支持 JPG / PNG 格式</p>
+            </div>
+            <input type="file" id="fileInput" accept="image/jpeg,image/png">
+        </div>
+
+        <!-- 性别选择 -->
+        <div class="gender-selector" id="genderSelector">
+            <span class="gender-label">TA的性别</span>
+            <div class="gender-toggle" id="genderToggle">
+                <button class="gender-option" data-gender="female" type="button">♀ 女性</button>
+                <button class="gender-option" data-gender="male" type="button">♂ 男性</button>
+            </div>
+        </div>
+
+        <!-- 分析按钮 -->
+        <button class="analyze-btn" id="analyzeBtn" disabled type="button">
+            ✦ 开始玄学分析 ✦
+        </button>
+
+        <!-- 结果卡片 -->
+        <div class="result-card" id="resultCard">
+            <div class="card-glow-orb" id="glowOrb1"></div>
+            <div class="card-glow-orb second" id="glowOrb2"></div>
+            <div class="card-inner-border"></div>
+            <div class="corner-ornament top-left"></div>
+            <div class="corner-ornament top-right"></div>
+            <div class="corner-ornament bottom-left"></div>
+            <div class="corner-ornament bottom-right"></div>
+
+            <!-- 命宫标签 -->
+            <div class="result-section">
+                <div class="section-label">
+                    <span>☽</span> 命宫标签
+                </div>
+                <div class="tags-row" id="tagsRow">
+                    <!-- 动态填充 -->
+                </div>
+            </div>
+
+            <!-- 深层性格解析 -->
+            <div class="result-section">
+                <div class="section-label">
+                    <span>✧</span> 深层性格解析
+                </div>
+                <div class="analysis-text" id="analysisText">
+                    <!-- 动态填充 -->
+                </div>
+            </div>
+
+            <!-- 如何追到TA -->
+            <div class="result-section">
+                <div class="section-label">
+                    <span>♡</span> 如何追到TA
+                </div>
+                <div class="strategy-text" id="strategyText">
+                    <!-- 动态填充 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ==================== 星空背景Canvas ====================
+            const starCanvas = document.getElementById('starCanvas');
+            const starCtx = starCanvas.getContext('2d');
+            let stars = [];
+            const STAR_COUNT = 100;
+
+            function resizeCanvas() {
+                starCanvas.width = window.innerWidth;
+                starCanvas.height = window.innerHeight;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', () => {
+                resizeCanvas();
+                initStars();
+            });
+
+            function initStars() {
+                stars = [];
+                for (let i = 0; i < STAR_COUNT; i++) {
+                    stars.push({
+                        x: Math.random() * starCanvas.width,
+                        y: Math.random() * starCanvas.height,
+                        r: Math.random() * 1.6 + 0.3,
+                        baseAlpha: Math.random() * 0.7 + 0.3,
+                        alpha: 0,
+                        twinkleSpeed: Math.random() * 0.015 + 0.005,
+                        twinkleOffset: Math.random() * Math.PI * 2,
+                        driftX: (Math.random() - 0.5) * 0.15,
+                        driftY: (Math.random() - 0.5) * 0.1,
+                    });
+                }
+            }
+            initStars();
+
+            function drawStars(timestamp) {
+                starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
+                for (const s of stars) {
+                    s.alpha = s.baseAlpha + Math.sin(timestamp * s.twinkleSpeed + s.twinkleOffset) * 0.35;
+                    s.alpha = Math.max(0.08, Math.min(1, s.alpha));
+                    s.x += s.driftX;
+                    s.y += s.driftY;
+                    if (s.x < -5) s.x = starCanvas.width + 5;
+                    if (s.x > starCanvas.width + 5) s.x = -5;
+                    if (s.y < -5) s.y = starCanvas.height + 5;
+                    if (s.y > starCanvas.height + 5) s.y = -5;
+
+                    starCtx.beginPath();
+                    starCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                    starCtx.fillStyle = `rgba(220,210,240,${s.alpha})`;
+                    starCtx.fill();
+
+                    // 亮星加辉光
+                    if (s.r > 1.2 && s.alpha > 0.65) {
+                        starCtx.beginPath();
+                        starCtx.arc(s.x, s.y, s.r * 3, 0, Math.PI * 2);
+                        starCtx.fillStyle = `rgba(200,180,230,${s.alpha * 0.2})`;
+                        starCtx.fill();
+                    }
+                }
+            }
+
+            function animateStars(timestamp) {
+                drawStars(timestamp);
+                requestAnimationFrame(animateStars);
+            }
+            requestAnimationFrame(animateStars);
+
+            // ==================== 流星效果 ====================
+            function spawnShootingStar() {
+                const star = document.createElement('div');
+                star.className = 'shooting-star';
+                const startX = Math.random() * window.innerWidth * 0.7 + window.innerWidth * 0.15;
+                const startY = Math.random() * window.innerHeight * 0.3;
+                const duration = Math.random() * 1.5 + 2;
+                star.style.left = startX + 'px';
+                star.style.top = startY + 'px';
+                star.style.setProperty('--duration', duration + 's');
+                document.body.appendChild(star);
+
+                setTimeout(() => {
+                    star.remove();
+                }, duration * 1000 + 200);
+            }
+            // 随机流星
+            function scheduleMeteor() {
+                const delay = Math.random() * 12000 + 6000;
+                setTimeout(() => {
+                    spawnShootingStar();
+                    scheduleMeteor();
+                }, delay);
+            }
+            scheduleMeteor();
+            // 初始快速来一颗
+            setTimeout(spawnShootingStar, 1500);
+
+            // ==================== DOM引用 ====================
+            const uploadZone = document.getElementById('uploadZone');
+            const uploadCard = document.getElementById('uploadCard');
+            const fileInput = document.getElementById('fileInput');
+            const previewOverlay = document.getElementById('previewOverlay');
+            const previewChangeBtn = document.getElementById('previewChangeBtn');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const resultCard = document.getElementById('resultCard');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const loadingText = document.getElementById('loadingText');
+            const tagsRow = document.getElementById('tagsRow');
+            const analysisText = document.getElementById('analysisText');
+            const strategyText = document.getElementById('strategyText');
+            const glowOrb1 = document.getElementById('glowOrb1');
+            const glowOrb2 = document.getElementById('glowOrb2');
+
+            let uploadedFile = null;
+            let isAnalyzing = false;
+            let currentResultData = null;
+            let selectedGender = null; // 默认未选择，需用户手动选择
+
+            // ==================== 8组模拟数据 ====================
+            const analysisData = [{
+                id: 1,
+                name: '月海沉璧',
+                tags: ['外冷内热', '灵性直觉', '边界感强'],
+                analysis: '你的Crush星盘中海王星与月亮呈三分相，水象能量深邃而丰沛。他外表如平静湖面，内里却暗涌着极强的共情力与直觉天赋。他习惯用理性筑起高墙，实则灵魂渴望被温柔穿透。土星于第七宫逆行，暗示他在亲密关系中常自我设限，但一旦卸下防备，便是最深情的存在。',
+                strategy: '追他的第一要诀是：克制比热情更有分量。因为他需要的是"被看穿但不被惊扰"的默契，所以你要避免猛攻和过度表达。他喜欢安静深邃的氛围，你要在深夜分享一首冷门后摇或氛围音乐给他，配文越简越好——"这首让我想到你"，发完不要追问他的回应，让沉默替你说话。因为他会被自然的静谧打动，所以你要在月相进入上弦时，约他去天文馆或安静的山顶看星星，在星空下他会不自觉地卸下心防。',
+            }, {
+                id: 2,
+                name: '星火燎原',
+                tags: ['热情奔放', '创造力强', '情绪波动'],
+                analysis: '你的Crush火星合相木星于第五宫，火象能量爆棚。他的灵魂像一团不灭的火焰，走到哪里都自带光芒与热度。创意如泉涌，但情绪起伏也如过山车般激烈。金星空相暗示他在感情中渴望被全然接纳，却害怕暴露脆弱。月亮落于狮子座，让他在爱里既骄傲又赤诚。',
+                strategy: '追他最好的策略是直接而真诚。因为他一眼就能看穿所有伪装和暧昧游戏，所以你要打直球，不要绕弯子。他喜欢刺激和肾上腺素，你要约他去体验密室逃脱、即兴戏剧或户外攀岩，在共同冒险中制造心动的化学反应。因为他吃软不吃硬，所以在他情绪低落时，你不要说教，只需安静陪伴并递上一杯热饮——温柔比强势更能撬动他的心，但温柔中要带着不容忽视的力量感。',
+            }, {
+                id: 3,
+                name: '霜华敛芒',
+                tags: ['理性克制', '完美主义', '内心柔软'],
+                analysis: '你的Crush土星主导的命盘，让他披上了冷静疏离的外衣。处女座特质强化了对秩序与完美的执念，但月亮落于双鱼揭示了内核的极致柔软。他不轻易交付信任，一旦认定便极度忠诚。水星与冥王呈六分相，赋予他洞察人心的锐利，却也让他在感情中过度思虑。',
+                strategy: '细节是攻破他心墙的钥匙。因为他洞察力极强，所以你要记住他随口提过的书、电影或餐厅，在某个寻常日子轻描淡写地提起——他会惊讶于你的用心，觉得你是真正懂他的人。因为他更喜欢私密而有深度的交流，所以不要在公共场合对他过于热情张扬，你要分享深度播客、纪录片或冷门哲学文章，用智识的碰撞与他擦出火花。周三水逆结束前，约他去一家安静有品位的独立书店，在书卷气息中他会慢慢向你敞开心扉。',
+            }, {
+                id: 4,
+                name: '风吟苍穹',
+                tags: ['自由不羁', '思维跳跃', '理想主义'],
+                analysis: '你的Crush天王星能量强劲，风象特质让他的思维如飞鸟般无拘无束。他讨厌被定义、被束缚，对世界怀有乌托邦式的理想。水星落于水瓶座，让他拥有跨界思考的天赋，但有时也因想法太多而难以落地。金星与天王呈四分相，暗示他在感情中需要极大的精神空间。',
+                strategy: '追他的关键是：永远不要试图"驯服"他。因为他讨厌被束缚、需要极大的精神空间，所以你要做他的同谋而非牢笼——陪他一起疯、一起探索未知领域。因为他喜欢思维跳跃、对冷门事物充满好奇，所以你要分享冷门知识、奇特的旅行目的地或先锋艺术展信息，让他觉得你是唯一能跟上他思维节奏的人。你只要给他足够的自由，他自己会飞回来。某个慵懒午后，约他去独立书店或黑胶唱片店，让两个自由的灵魂在音乐与文字中自然相遇。',
+            }, {
+                id: 5,
+                name: '暗夜蔷薇',
+                tags: ['神秘魅惑', '洞察力强', '情感深邃'],
+                analysis: '你的Crush冥王星与金星呈紧密相位，赋予他致命的吸引力与穿透表象的直觉。他像午夜绽放的蔷薇，美丽而带刺，令人忍不住想靠近却又畏惧被刺伤。情感世界复杂而深邃，不轻易展露真心，但一旦爱上便刻骨铭心。第八宫能量强大，他对人性有着超乎常人的理解。',
+                strategy: '追他的核心在于：保持神秘感，让他来追逐你。因为他洞察力极强、对人性有超乎常人的理解，所以任何刻意的表演都会被他一眼看穿。你要用欲言又止的眼神和恰到好处的留白吸引他的好奇心，不要急于全盘托出。因为他喜欢暗黑美学和深邃的事物，所以你要分享哥特建筑摄影、塔罗牌面或黑色电影截图，在灵魂深处制造共鸣。在深夜发送一条模棱两可但充满诗意的话，他会被勾起兴趣反复揣摩。记住：对他而言，追逐的过程比结果更迷人，你要保持一定的不可得性。',
+            }, {
+                id: 6,
+                name: '晨曦微露',
+                tags: ['温柔治愈', '共情力强', '隐藏坚韧'],
+                analysis: '你的Crush月亮落于巨蟹座合相金星，让他拥有天然的治愈气场。笑容如晨光般温暖和煦，总能抚平他人内心的焦躁与不安。但太阳与冥王呈四分相，暗示他内心藏着不为人知的坚韧与力量。他不喜欢冲突与对抗，却能在关键时刻展现出惊人的勇气与担当。',
+                strategy: '追他不需要昂贵礼物和华丽排场，真诚的温柔最能打动他。因为他共情力极强，所以亲手做的小点心、手写的卡片比任何奢侈品都更有效——他会感受到你藏在细节里的用心。因为他不喜欢冲突但内心坚韧，所以你要在咖啡店约会时不经意地为他挡开拥挤的人群，用小小的保护动作展现你的细腻与关怀。你要分享治愈系电影或温暖的小故事，让他感受到你内心的柔软力量。最最重要的一条：切忌在他面前伪装或演戏——他的共情雷达能一眼看穿所有不真诚。',
+            }, {
+                id: 7,
+                name: '雷霆静蛰',
+                tags: ['表面冷静', '内在激情', '行动力强'],
+                analysis: '你的Crush火星于白羊座擢升，却被土星刑克，形成"静水深流"的独特能量格局。他外表沉稳如山，内心却翻涌着炽热的岩浆。他的行动力极强，一旦确定目标便全力以赴，不达目的不罢休。金火相位暗示他在感情中极具魅力却不自知，常让对方先心动。',
+                strategy: '追他不需要甜言蜜语，行动才是最好的告白。因为他是行动派，比起空话更看重实质，所以在他忙碌时你要默默递上一杯咖啡，在他疲惫时提供实际帮助而非空洞安慰。因为他欣赏有目标感和执行力的人，所以你专注事业或爱好时的样子对他极具吸引力。因为他的能量需要在竞争中释放，所以约会首选运动或竞技类活动——保龄球、射箭或攀岩，让健康的竞争催生化学反应。记住：对他而言，并肩作战的战友比甜言蜜语的情人更有分量。',
+            }, {
+                id: 8,
+                name: '极光幻梦',
+                tags: ['浪漫幻想', '艺术气质', '敏感细腻'],
+                analysis: '你的Crush海王星与金星呈合相，双鱼座能量弥漫于整个命盘。他活在自己编织的浪漫幻境中，对美有着近乎偏执的追求。艺术感知力极强，能从平凡日常中捕捉到诗意瞬间。但土星能量缺失带来落地困难，需要有人将他温柔地拉回现实，给予踏实的陪伴。',
+                strategy: '追他的秘诀是：制造"电影般的瞬间"。因为他对浪漫有着近乎偏执的追求，所以雨中共撑一把伞、黄昏天台上的意外相遇、书店里同时伸手拿同一本书——这些精心设计的巧合桥段对他有致命的吸引力。因为他艺术感知力极强，所以你要分享独立音乐、小众电影和诗集，带他去美术馆或海边看一场完整的日落。但因为他容易飘在幻想中难以落地，所以浪漫归浪漫，你一定要在生活琐事上展现出靠谱可靠的一面——这会成为他最安心的港湾，让他心甘情愿留在你身边。',
+            }];
+
+            // ==================== 光晕颜色数组 ====================
+            const glowColorSets = [
+                { primary: 'rgba(212, 175, 55, 0.4)', secondary: 'rgba(155, 89, 182, 0.35)' },
+                { primary: 'rgba(155, 89, 182, 0.45)', secondary: 'rgba(180, 130, 200, 0.3)' },
+                { primary: 'rgba(100, 150, 220, 0.4)', secondary: 'rgba(140, 180, 230, 0.3)' },
+                { primary: 'rgba(200, 140, 160, 0.42)', secondary: 'rgba(220, 160, 180, 0.32)' },
+                { primary: 'rgba(80, 185, 155, 0.38)', secondary: 'rgba(120, 200, 175, 0.28)' },
+                { primary: 'rgba(190, 160, 210, 0.4)', secondary: 'rgba(160, 130, 190, 0.33)' },
+            ];
+
+            // ==================== 加载提示文字 ====================
+            const loadingMessages = [
+                '正在感知能量场...',
+                '星盘转动中，请静候...',
+                '水晶球正在显影...',
+                '塔罗之力汇聚中...',
+                '解读灵魂印记...',
+                '星辰在诉说...',
+                '连接宇宙频率...',
+                '占卜之眼正在睁开...',
+            ];
+
+            // ==================== 文件处理 ====================
+            function handleFile(file) {
+                if (!file) return;
+                if (!file.type.match(/^image\/(jpeg|png)$/)) {
+                    alert('请上传 JPG 或 PNG 格式的头像图片。');
+                    return;
+                }
+                uploadedFile = file;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewOverlay.style.backgroundImage = `url(${e.target.result})`;
+                    previewOverlay.classList.add('active');
+                    uploadZone.querySelector('.upload-icon-svg').style.opacity = '0';
+                    uploadZone.querySelector('.upload-text').style.opacity = '0';
+                    uploadZone.querySelector('.upload-hint').style.opacity = '0';
+                    uploadCard.classList.add('has-image');
+                    updateAnalyzeButtonState();
+                    // 如果之前有结果，隐藏
+                    if (resultCard.classList.contains('visible')) {
+                        resultCard.classList.remove('visible');
+                        resultCard.style.display = 'none';
+                        analyzeBtn.textContent = '✦ 开始玄学分析 ✦';
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+
+            // 点击上传
+            uploadZone.addEventListener('click', (e) => {
+                if (e.target === previewChangeBtn) return;
+                if (isAnalyzing) return;
+                fileInput.click();
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files && e.target.files[0]) {
+                    handleFile(e.target.files[0]);
+                }
+            });
+
+            // 更换按钮
+            previewChangeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (isAnalyzing) return;
+                fileInput.click();
+            });
+
+            // 拖拽上传
+            uploadZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (!isAnalyzing) {
+                    uploadZone.classList.add('drag-over');
+                }
+            });
+
+            uploadZone.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                uploadZone.classList.remove('drag-over');
+            });
+
+            uploadZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                uploadZone.classList.remove('drag-over');
+                if (isAnalyzing) return;
+                const files = e.dataTransfer.files;
+                if (files && files[0]) {
+                    handleFile(files[0]);
+                }
+            });
+
+            // 防止拖拽文件到页面其他位置时浏览器打开文件
+            document.addEventListener('dragover', (e) => {
+                e.preventDefault();
+            });
+            document.addEventListener('drop', (e) => {
+                e.preventDefault();
+            });
+
+            // ==================== 性别选择 ====================
+            const genderOptions = document.querySelectorAll('.gender-option');
+            genderOptions.forEach(opt => {
+                opt.addEventListener('click', () => {
+                    if (isAnalyzing) return;
+                    genderOptions.forEach(o => o.classList.remove('active'));
+                    opt.classList.add('active');
+                    selectedGender = opt.dataset.gender;
+                    updateAnalyzeButtonState();
+                });
+            });
+
+            // ==================== 分析按钮 ====================
+            function updateAnalyzeButtonState() {
+                if (uploadedFile && selectedGender) {
+                    analyzeBtn.disabled = false;
+                    analyzeBtn.classList.add('pulse-ready');
+                } else {
+                    analyzeBtn.disabled = true;
+                    analyzeBtn.classList.remove('pulse-ready');
+                }
+            }
+
+            analyzeBtn.addEventListener('click', () => {
+                if (isAnalyzing) return;
+                if (!uploadedFile) {
+                    alert('请先上传一张头像图片，让星辰为你解读。');
+                    return;
+                }
+                if (!selectedGender) {
+                    alert('请先选择TA的性别，以便星盘准确运转。');
+                    return;
+                }
+                startAnalysis();
+            });
+
+            function startAnalysis() {
+                isAnalyzing = true;
+                analyzeBtn.disabled = true;
+                analyzeBtn.classList.remove('pulse-ready');
+                resultCard.classList.remove('visible');
+                resultCard.style.display = 'none';
+
+                // 随机选择加载消息
+                const randomMsg = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
+                loadingText.innerHTML = randomMsg + '<span class="loading-dots">...</span>';
+
+                // 显示加载覆盖层
+                loadingOverlay.classList.add('active');
+
+                // 随机加载时长 3.2s - 4.8s
+                const loadDuration = Math.random() * 1600 + 3200;
+
+                // 随机选择一组数据
+                const randomIndex = Math.floor(Math.random() * analysisData.length);
+                currentResultData = analysisData[randomIndex];
+
+                // 随机选择光晕颜色
+                const randomGlow = glowColorSets[Math.floor(Math.random() * glowColorSets.length)];
+
+                setTimeout(() => {
+                    // 隐藏加载覆盖层
+                    loadingOverlay.classList.remove('active');
+
+                    // 应用光晕颜色
+                    glowOrb1.style.background = randomGlow.primary;
+                    glowOrb2.style.background = randomGlow.secondary;
+                    resultCard.style.setProperty('--glow-color', randomGlow.primary);
+                    resultCard.style.setProperty('--glow-color-2', randomGlow.secondary);
+
+                    // 填充结果
+                    displayResult(currentResultData);
+
+                    // 显示结果卡片
+                    resultCard.style.display = 'block';
+                    // 强制回流后添加动画类
+                    void resultCard.offsetWidth;
+                    resultCard.classList.add('visible');
+
+                    // 恢复按钮
+                    analyzeBtn.disabled = false;
+                    analyzeBtn.textContent = '⟳ 重新占卜';
+                    analyzeBtn.classList.add('pulse-ready');
+                    isAnalyzing = false;
+
+                    // 滚动到结果卡片
+                    resultCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, loadDuration);
+            }
+
+            // 根据性别替换代词
+            function applyGender(text) {
+                if (selectedGender === 'female') {
+                    return text.replace(/他/g, '她');
+                }
+                return text;
+            }
+
+            function displayResult(data) {
+                // 标签
+                tagsRow.innerHTML = '';
+                data.tags.forEach(tag => {
+                    const span = document.createElement('span');
+                    span.className = 'tag-item';
+                    span.textContent = tag;
+                    tagsRow.appendChild(span);
+                });
+
+                // 性格解析（应用性别代词替换）
+                analysisText.textContent = applyGender(data.analysis);
+
+                // 攻心策略（应用性别代词替换）
+                const genderedStrategy = applyGender(data.strategy);
+                strategyText.textContent = genderedStrategy;
+            }
+
+            // ==================== 初始流星 ====================
+            setTimeout(spawnShootingStar, 800);
+            setTimeout(spawnShootingStar, 3500);
+
+            // ==================== 键盘快捷键 ====================
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !isAnalyzing && uploadedFile && analyzeBtn.disabled === false) {
+                    e.preventDefault();
+                    analyzeBtn.click();
+                }
+            });
+
+            console.log('🔮 头像玄学Crush分析器已就绪');
+            console.log('   ✦ 上传头像 → 点击分析 → 静候星辰启示');
+            console.log('   ✦ 预置 ' + analysisData.length + ' 组玄学分析数据');
+            console.log('   ✦ 每组包含：命宫标签 | 深层性格解析 | 专属攻心策略');
+            console.log('   ✦ 每次随机抽取，光晕颜色变幻，仪式感拉满');
+        })();
+    </script>
+  <script id="md-click">
+              window.mdClick = e => {
+                const target = e.target;
+                const {href, target: linkTarget} = target.dataset;
+                const appType = 'web';
+                const isBlank = linkTarget === '_blank';
+
+                if (!href) return;
+
+                e.stopPropagation();
+                e.preventDefault();
+
+                // 外部链接或新窗口打开
+                if (isBlank || href.startsWith('http')) {
+                  let finalHref = href;
+                  if (appType === 'miniapp' && !href.startsWith('http')) {
+                    finalHref = window.location.href.split('#')[0] + '#/' + href;
+                  }
+                  window.open(finalHref, linkTarget || '_self');
+                  return;
+                }
+
+                // 内部路由跳转
+                const finalHref = href.startsWith('/') ? href : '/' + href;
+                if (appType === 'miniapp') {
+                  window.location.hash = finalHref;
+                  window.dispatchEvent(new HashChangeEvent('hashchange'));
+                } else {
+                  window.history.pushState({}, '', finalHref);
+                  window.dispatchEvent(new Event('popstate'));
+                }
+              };
+              document.addEventListener('click', window.mdClick, true);
+            </script>
+  <script id="iframe-onerror-catcher">
+              const observer = new PerformanceObserver((list) => {
+                list.getEntries().forEach((entry) => {
+                  if (entry.initiatorType === 'script' && entry.responseStatus >= 400) {
+                    window.parent.postMessage({
+                      type: "RESOURCE_LOAD_ERROR",
+                      name: entry.name,
+                      status: entry.responseStatus
+                    }, "*");
+                    console.warn('[iframe-error] Resource failed:', entry.name, entry.responseStatus);
+                  }
+                });
+              });
+              observer.observe({ type: 'resource', buffered: true });
+            </script>
+<script>
+  (function () {
+    const script = document.createElement('script');
+    script.src = 'https://resource-static.cdn.bcebos.com/runtime-inject/domain-static/online/1.0.92.1/static/miaoda-external.js?tm=' + new Date().getTime();
+    script.async = true;
+    script.onload = function () {
+      window.miaoda.init({
+        appId: 'app-d6o22l5w3hmp',
+        type: 'TOOL',
+        share: {
+            title: "头像玄学Crush分析器网页",
+            desc: "一款趣味性Web工具，用户上传暗恋对象头像并选择性别，通过玄学分析生成命宫标签、性格解析和追求建议。采用星空主题和丰富动画效果营造神秘氛围。",
+            image: "https://job-manager-artifacts-online.cdn.bcebos.com/prod/artifacts/8c399b00-54cd-469b-b261-50bb7d708b6d/app-d6o22l5w3hmp_web_1784702453386.png"
+        }
+      });
+    };
+    document.head.appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
